@@ -1,0 +1,15 @@
+{%- set interface = 'eth0' if salt['grains.get']('env') == 'dev' else 'eth1' -%}
+{%- set addr = salt['network.interface_ip'](interface) -%}
+
+server {
+    listen {{ addr }}:80;
+
+    root /usr/share/nginx/www;
+    index index.html index.htm;
+
+    server_name {{ addr }};
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

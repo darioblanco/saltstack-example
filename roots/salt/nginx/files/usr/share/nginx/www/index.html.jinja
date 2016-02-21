@@ -1,0 +1,13 @@
+{% set host = salt['grains.get']('host') -%}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Saltstack test from {{ host }}</title>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>Hi there!  This has been provisioned by Salt Stack in:</p>
+
+<h2>{{ host }}</h2>
+
+</body>
+</html>
