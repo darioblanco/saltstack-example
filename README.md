@@ -1,4 +1,6 @@
-# Saltstack Master-Minion Vagrant set up example
+# Saltstack Example
+
+Trivial Master-Minion Vagrant set up example
 
 ## Requirements
 
