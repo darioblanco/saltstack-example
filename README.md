@@ -2,12 +2,17 @@
 
 ## Requirements
 
-VirtualBox >= 5.0.14
-Vagrant >= 1.8.1
+Developed with:
+
+VirtualBox 5.0.14
+
+Vagrant 1.8.1
+
+Prior versions might work, but are untested.
 
 ## What is this?
 
-This is an example of a Saltstack master/minion configuration automatized with Vagrant, with a Virtualbox provider.
+This is a very simple example of a Saltstack master/minion configuration automatized with Vagrant, with a Virtualbox provider.
 
 The Salt master machine is called `saltmaster`, and there is a minion example called `webserver`: an nginx serving a very simple html page.
 
@@ -15,7 +20,7 @@ The Salt master machine is called `saltmaster`, and there is a minion example ca
 
 Start the virtual machines
 
-> $ vagrant up salmaster webserver
+> $ vagrant up saltmaster webserver
 
 They should have been automatically provisioned, if you want to reprovision the webserver, just type
 
