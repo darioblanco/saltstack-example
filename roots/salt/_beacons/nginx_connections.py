@@ -5,6 +5,7 @@ Beacon to emit nginx connection status.
 
 # Import Python libs
 import logging
+import socket
 
 # Import Salt libs
 import salt.utils
@@ -42,6 +43,22 @@ def validate(config):
             if config['protocol'] not in VALID_PROTOCOLS:
                 return False, ('Protocol configuration for nginx_connections '
                                'should be in {}'.format(VALID_PROTOCOLS))
+        if 'port' in config:
+            try:
+                port = int(config['port'])
+            except ValueError:
+                return False, ('Port configuration for nginx_connections '
+                               'is not a number.')
+            else:
+                if port < 1 or port > 65535:
+                    return False, ('Port configuration for nginx_connection '
+                                   'is not a valid port number.')
+        if 'host' in config:
+            try:
+                socket.gethostbyname(config['host'])
+            except socket.error:
+                return False, ('Host configuration for nginx_connection '
+                               'cannot be resolved.')
     return True, 'Valid beacon configuration'
 
 
@@ -51,15 +68,30 @@ def _get_nginx_status(**kwargs):
     the response and provide a statistics dictionary with connections and
     requests.
     """
-    r = requests.get('{protocol}://{host}:{port}{path}'.format(**kwargs))
-    lines = r.text.split('\n')
-
     stats = {}
-    stats['open'] = int(lines[0].split(': ')[1])
-    stats['accepted'], stats['handled'], stats['requests'] = (
-        int(num) for num in lines[2].split())
-    stats['reading'], stats['writing'], stats['waiting'] = (
-        int(num) for i, num in enumerate(lines[3].split()) if i in [1, 3, 5])
+    url = '{protocol}://{host}:{port}{path}'.format(**kwargs)
+
+    try:
+        r = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        log.error('Unable to connect to nginx status module in {}: {}'
+                  ''.format(url, e))
+    else:
+        if 'server accepts handled requests' in r.text:
+            lines = r.text.split('\n')
+            stats['open'] = int(lines[0].split(': ')[1])
+            stats['accepted'], stats['handled'], stats['requests'] = (
+                int(num) for num in lines[2].split())
+            stats['reading'], stats['writing'], stats['waiting'] = (
+                int(num)
+                for i, num in enumerate(lines[3].split())
+                if i in [1, 3, 5]
+            )
+            log.debug('Collected nginx statistics: {}'.format(stats))
+        else:
+            log.error('Unable to connect to nginx status module in {}; '
+                      'status code: {}, body: {}'.format(url, r.status_code,
+                                                         r.text))
 
     return stats
 

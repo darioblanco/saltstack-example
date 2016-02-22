@@ -43,7 +43,7 @@ The minion config declares a custom `nginx_connections` beacon (developed under 
 It is possible to see those events in `saltmaster` running in debug mode:
 
 > $ sudo su
-> $ service salt-master start
+> $ service salt-master stop
 > $ salt-master -l debug
 
 The `webserver` minion will send them periodically:
