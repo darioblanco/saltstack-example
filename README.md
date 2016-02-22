@@ -51,3 +51,15 @@ It is possible to see those events in `saltmaster` running in debug mode:
 The `webserver` minion will send them periodically:
 
 > [DEBUG   ] Sending event - data = {'_stamp': '2016-02-22T11:40:52.006223', 'tag': 'salt/beacon/webserver.dev.darioblanco.com/nginx_connections/', 'data': {'accepted': 214, 'handled': 214, 'writing': 1, 'waiting': 0, 'requests': 217, 'reading': 0, 'open': 1, 'id': 'webserver.dev.darioblanco.com'}}
+
+### Testing
+
+You can test the nginx_connections beacon with `pytest`.
+
+First, install the dependencies inside a virtualenv
+
+> $ pip install -r requirements -r dev-requirements
+
+Run py.test, it will discover the test case automatically.
+
+> $ py.test

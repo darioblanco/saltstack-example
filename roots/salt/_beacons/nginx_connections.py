@@ -42,7 +42,7 @@ def validate(config):
         if 'protocol' in config:
             if config['protocol'] not in VALID_PROTOCOLS:
                 return False, ('Protocol configuration for nginx_connections '
-                               'should be in {}'.format(VALID_PROTOCOLS))
+                               'should be in {}.'.format(VALID_PROTOCOLS))
         if 'port' in config:
             try:
                 port = int(config['port'])
@@ -59,7 +59,7 @@ def validate(config):
             except socket.error:
                 return False, ('Host configuration for nginx_connection '
                                'cannot be resolved.')
-    return True, 'Valid beacon configuration'
+    return True, 'Valid beacon configuration.'
 
 
 def _get_nginx_status(**kwargs):
@@ -73,7 +73,7 @@ def _get_nginx_status(**kwargs):
 
     try:
         r = requests.get(url)
-    except requests.exceptions.RequestException as e:
+    except requests.RequestException as e:
         log.error('Unable to connect to nginx status module in {}: {}'
                   ''.format(url, e))
     else:
