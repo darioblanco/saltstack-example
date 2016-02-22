@@ -87,6 +87,7 @@ def _get_nginx_status(**kwargs):
                 for i, num in enumerate(lines[3].split())
                 if i in [1, 3, 5]
             )
+            stats['requests_per_conn'] = stats['requests'] / stats['handled']
             log.debug('Collected nginx statistics: {}'.format(stats))
         else:
             log.error('Unable to connect to nginx status module in {}; '
