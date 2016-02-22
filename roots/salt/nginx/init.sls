@@ -4,14 +4,19 @@
 nginx:
   pkg:
     - installed
-  service:
-    - running
+  service.running:
     - enable: True
     - restart: True
     - watch:  # Reload automatically under certain conditions
+      - pkg: nginx
       - file: /etc/nginx/nginx.conf
       {% for site in sites %}
-      - file: /etc/nginx/sites-available/{{ site }}
+      - file: /etc/nginx/sites-enabled/{{ site }}
+      {% endfor %}
+    - require:
+      - file: /etc/nginx/nginx.conf
+      {% for site in sites %}
+      - file: /etc/nginx/sites-enabled/{{ site }}
       {% endfor %}
 
 # Manage nginx configuration file
