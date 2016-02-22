@@ -35,3 +35,17 @@ They should have been automatically provisioned, if you want to reprovision the 
 Now, just go to a browser and type the webserver IP: http://192.168.100.3/
 
 You should see a very basic webpage provisioned by Saltmaster into the webserver minion.
+
+## Custom nginx_connections beacon
+
+The minion config declares a custom `nginx_connections` beacon (developed under `roots/salt/_beacons/nginx_connections.py`), which sends nginx connection stats (see [ngx_http_stub_status_module](http://nginx.org/en/docs/http/ngx_http_stub_status_module.html)) every 10 seconds. This beacon just parses the output given by http://192.168.100.3:8080.
+
+It is possible to see those events in `saltmaster` running in debug mode:
+
+> $ sudo su
+> $ service salt-master start
+> $ salt-master -l debug
+
+The `webserver` minion will send them periodically:
+
+> [DEBUG   ] Sending event - data = {'_stamp': '2016-02-22T11:40:52.006223', 'tag': 'salt/beacon/webserver.dev.darioblanco.com/nginx_connections/', 'data': {'accepted': 214, 'handled': 214, 'writing': 1, 'waiting': 0, 'requests': 217, 'reading': 0, 'open': 1, 'id': 'webserver.dev.darioblanco.com'}}
