@@ -1,15 +1,16 @@
 {%- set sites = ['default','monitoring'] -%}
 
-# Ensure nginx is installed and running
+# Ensure nginx is installed and reload when required
 nginx:
   pkg:
     - installed
-  service.running:
+  service:
+    - running
+    - enable: True
+    - restart: True
     - watch:  # Reload automatically under certain conditions
-      - pkg: nginx
       - file: /etc/nginx/nginx.conf
       {% for site in sites %}
-      - file: /etc/nginx/sites-available/{{ site }}
       - file: /etc/nginx/sites-available/{{ site }}
       {% endfor %}
 
