@@ -18,6 +18,10 @@ This is a very simple example of a Saltstack master/minion configuration automat
 
 The Salt master machine is called `saltmaster`, and there is a minion example called `webserver`: an nginx serving a very simple html page.
 
+### Nginx monitoring
+
+In addition, the nginx state uses the HttpStubStatusModule for monitoring, in http://192.168.100.3:8080. Requests are restricted to vagrant's subnet (your host should have access to this subnet already). You can browse open, accepted and handled connections, and handled requests. This information will be employed by the custom SaltStack beacon.
+
 ## How to run
 
 Start the virtual machines

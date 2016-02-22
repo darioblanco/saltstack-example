@@ -1,3 +1,5 @@
+{%- set sites = ['default','monitoring'] -%}
+
 # Ensure nginx is installed and running
 nginx:
   pkg:
@@ -6,7 +8,10 @@ nginx:
     - watch:  # Reload automatically under certain conditions
       - pkg: nginx
       - file: /etc/nginx/nginx.conf
-      - file: /etc/nginx/sites-available/default
+      {% for site in sites %}
+      - file: /etc/nginx/sites-available/{{ site }}
+      - file: /etc/nginx/sites-available/{{ site }}
+      {% endfor %}
 
 # Manage nginx configuration file
 /etc/nginx/nginx.conf:
@@ -16,21 +21,22 @@ nginx:
     - group: root
     - mode: 640
 
-# Manage default nginx site as a template
-/etc/nginx/sites-available/default:
+# Manage nginx sites as templates and symlink them
+{% for site in sites %}
+/etc/nginx/sites-available/{{ site }}:
   file.managed:
-    - source: salt://nginx/files/etc/nginx/sites-available/default.jinja
+    - source: salt://nginx/files/etc/nginx/sites-available/{{ site }}.jinja
     - template: jinja
     - user: root
     - group: root
     - mode: 640
 
-# Symlink site-available file to site-enabled
-/etc/nginx/sites-enabled/default:
+/etc/nginx/sites-enabled/{{ site }}:
   file.symlink:
-    - target: /etc/nginx/sites-available/default
+    - target: /etc/nginx/sites-available/{{ site }}
     - require:
-      - file: /etc/nginx/sites-available/default
+      - file: /etc/nginx/sites-available/{{ site }}
+{% endfor %}
 
 # Example html page
 /usr/share/nginx/www/index.html:

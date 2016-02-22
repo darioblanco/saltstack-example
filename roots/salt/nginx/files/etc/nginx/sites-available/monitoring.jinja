@@ -1,0 +1,18 @@
+{%- set interface = 'eth0' if salt['grains.get']('env') == 'dev' else 'eth1' -%}
+{%- set addr = salt['network.interface_ip'](interface) -%}
+{%- set subnets = salt['network.subnets'](interface) -%}
+
+server {
+    listen {{ addr }}:8080;
+
+    server_name {{ addr }};
+
+    location / {
+        stub_status on;
+        access_log   off;
+        {% for subnet in subnets %}
+        allow {{ subnet }};  # Only allow requests from same network
+        {% endfor %}
+        deny all;
+    }
+}
